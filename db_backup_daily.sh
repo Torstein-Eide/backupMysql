@@ -124,12 +124,11 @@ tar -I pigz -cf $DEST/$NOW.tar.gz $NOW
 
 if [ -n "$EMAIL" ]
 then
-echo "sant"
+echo "sending mail"
         echo "
         To: $EMAIL
         Subject: MySQL backup
-        MySQL backup is completed! Backup name is $NOW.tar.gz" | ssmtp $EMAIL
-
+        MySQL backup is completed! Backup name is $NOW.tar.gz" | ssmtp $EMAIL &
 else
 echo "${RED}mail not setup${NC}"
 fi
