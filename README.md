@@ -1,8 +1,7 @@
-# backupSettings
-## backup of mysql/mariadb
+# backup of mysql/mariadb
 note: this script runs unsecured connection, so don't use it over the internet.
 
-Some basic Git commands are:
+## get the scripts:
 ```
 install -d /etc/scripts
 chmod 700 /etc/scripts
@@ -11,7 +10,7 @@ wget https://raw.githubusercontent.com/Eideen/backupSettings/master/db_backup_da
 wget https://raw.githubusercontent.com/Eideen/backupSettings/master/db_backup_horly.sh
 chmod +x ./*.sh
 ```
-make a backup user:
+## make a backup user:
 * HOSTNAME
 Server that the script is running on.
 * DB_USERNAME
@@ -19,18 +18,18 @@ database backup username
 * DB_PASSWORD
 database backup user passowrd, make a random password.
 
-A way to make a password:
+### A way to make a password:
 ```
 date +%s | sha256sum | base64 | head -c 32 ; echo
 ```
-On the mysql server:
+## On the mysql server:
 ```
 mysql -u root -p
 CREATE USER '[DB_USERNAME]'@'[HOSTNAME]' IDENTIFIED BY '[DB_PASSWORD]';
 GRANT SELECT, SHOW VIEW, RELOAD, REPLICATION CLIENT, EVENT, TRIGGER ON *.* TO '[DB_USERNAME]'@'[HOSTNAME]' ;
 flush privileges;
 ```
-edit the scripts to fit your setup:
+## edit the scripts to fit your setup:
 * DB_USERNAME
 database backup username, it is recommend to use a dedicated backup user.
 * DB_PASSWORD
@@ -52,7 +51,7 @@ default is `information_schema` and `performance_schema`. One line per datebase.
 Nano db_backup_horly.sh db_backup_daily.sh
 ```
 
-Now test your script:
+## Now test your script:
 >```
 > #/etc/scripts/db_backup_daily.sh
 >list of databases:
@@ -66,7 +65,7 @@ Now test your script:
 >mail not setup
 >MySQL backup is completed without export fail
 
-you can control the content of the backup with the following commands:
+## you can control the content of the backup with the following commands:
  ```
  tar -tvf $DEST/$NOW.tar.gz
  ```
@@ -77,21 +76,20 @@ drwxr-xr-x root/root         0 2018-11-11 11:32 2018-11-11_1132/
 drwx------ root/root         0 2018-11-11 11:32 2018-11-11_1132/mysql/
 -rw-r--r-- root/root       831 2018-11-11 11:32 2018-11-11_1132/mysql/mysql.sql
  ```
-restore database:
+## restore database:
  ```
 tar -xf [backupfile].tar.gz
 cd .[backupfile]/mysql/
 mysqladmin -u root -p[root_password] create[database_name]
 mysql -u root -p[root_password] [database_name] < dumpfilename.sql
  ```
-Setup crontab:
+## Setup crontab:
 ```
 echo "#mysql database backup
 32 1 * * * root /etc/scripts/db_backup_daglig.sh > /dev/null 2&>1
 44 * * * * root /etc/scripts/db_backup_horly.sh  > /dev/null 2&>1" | tee /etc/cron.d/backup_MYsql
 ```
-Verfie that cron is working
+### Verfie that cron is working
 ```
 grep "/etc/tilpasset/db_backup_horly.sh" /var/log/syslog
 ```
-## backup of ubuntu/debian pakages
