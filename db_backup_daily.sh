@@ -42,7 +42,7 @@ DAYS=31
 
 
 
-# Get date in dd-mm-yyyy format
+# Get date in yyyy-mm-dd_HHmm format
 NOW="$(date +"%Y-%m-%d_%H%M")"
 
 # Create Backup sub-directories
@@ -104,6 +104,7 @@ if [ "$SKIP" != "" ];
 }
 
 # Archive database dumps
+echo "extracting databases:"
 for db in $DBS
 do
 dbdump &
@@ -115,6 +116,7 @@ FAIL=0
 #    wait $job || let "FAIL+=1"
 #done
 wait
+echo "extraction ${GREEN}done${NC}"
 # Archive the directory, send mail and cleanup
 cd $TEMPdir
 tar -I pigz -cf $DEST/$NOW.tar.gz $NOW
@@ -140,8 +142,8 @@ find $DEST -mtime +$DAYS -exec rm -f {} \;
 
 if [ "$FAIL" == "0" ];
 then
-echo "${GREEN}MySQL backup is completed without export fail"
+echo "MySQL backup is ${GREEN}completed without export fail"
 else
-echo "${RED}MySQL backup is completed with export ($FAIL) fails!"
+echo "MySQL backup is ${RED}completed with export $FAIL fails!"
 fi
 
