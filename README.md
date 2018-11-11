@@ -56,7 +56,7 @@ Nano db_backup_horly.sh db_backup_daily.sh
 /etc/scripts/db_backup_horly.sh
 /etc/scripts/db_backup_daily.sh
 ```
-
+output example:
 >```
 >list of databases:
 >* information_schema
