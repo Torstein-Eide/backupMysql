@@ -74,12 +74,12 @@ output example:
  tar -tvf $DEST/$NOW.tar.gz
  ```
 example:
-```
- # tar -tvf /volum/@backup/mysql/daglig/[backupfile].tar.gz
-drwxr-xr-x root/root         0 2018-11-11 11:32 2018-11-11_1132/
-drwx------ root/root         0 2018-11-11 11:32 2018-11-11_1132/mysql/
--rw-r--r-- root/root       831 2018-11-11 11:32 2018-11-11_1132/mysql/mysql.sql
- ```
+>```
+> # tar -tvf /volum/@backup/mysql/daglig/[backupfile].tar.gz
+>drwxr-xr-x root/root         0 2018-11-11 11:32 2018-11-11_1132/
+>drwx------ root/root         0 2018-11-11 11:32 2018-11-11_1132/mysql/
+>-rw-r--r-- root/root       831 2018-11-11 11:32 2018-11-11_1132/mysql/mysql.sql
+> ```
 ## restore database:
  ```
 tar -xf [backupfile].tar.gz
