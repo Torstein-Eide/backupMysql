@@ -79,10 +79,10 @@ drwx------ root/root         0 2018-11-11 11:32 2018-11-11_1132/mysql/
  ```
 restore database:
  ```
-#tar -xf [backupfile].tar.gz
-#cd .[backupfile]/mysql/
-#mysqladmin -u root -p[root_password] create[database_name]
-#mysql -u root -p[root_password] [database_name] < dumpfilename.sql
+tar -xf [backupfile].tar.gz
+cd .[backupfile]/mysql/
+mysqladmin -u root -p[root_password] create[database_name]
+mysql -u root -p[root_password] [database_name] < dumpfilename.sql
  ```
 Setup crontab:
 ```
