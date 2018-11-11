@@ -26,7 +26,7 @@ date +%s | sha256sum | base64 | head -c 32 ; echo
 ```
 mysql -u root -p
 CREATE USER '[DB_USERNAME]'@'[HOSTNAME]' IDENTIFIED BY '[DB_PASSWORD]';
-GRANT SELECT, SHOW VIEW, RELOAD, REPLICATION CLIENT, EVENT, TRIGGER ON *.* TO '[DB_USERNAME]'@'[HOSTNAME]' ;
+GRANT LOCK TABLES, SELECT, SHOW VIEW, RELOAD, REPLICATION CLIENT, EVENT, TRIGGER ON *.* TO '[DB_USERNAME]'@'[HOSTNAME]' ;
 flush privileges;
 ```
 ## edit the scripts to fit your setup:
