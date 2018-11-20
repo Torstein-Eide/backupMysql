@@ -24,7 +24,7 @@ BAD="${RED}YES${NC}"
 
 # Set these variables
 MyUSER="backup"	# DB_USERNAME # edit me
-MyPASS="2001:4661:4f72:0"	# DB_PASSWORDc
+MyPASS="NDhkNTc1NmVkMjE5ZmMzZGVhNmViY2E5"	# DB_PASSWORDc
 MyHOST="localhost"	# DB_HOSTNAME # edit me
 
 # Backup Dest directory
