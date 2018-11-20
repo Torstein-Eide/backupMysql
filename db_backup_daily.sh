@@ -9,7 +9,7 @@ MYSQL="$(which mysql)"
 MYSQLDUMP="$(which mysqldump)"
 Pigz="$(which pigz)"
 
-if [ -e $Pigz ] || [ -e $MYSQL ] || [ -e $MYSQLDUMP ]
+if [ -z $Pigz ] || [ -z $MYSQL ] || [ -z $MYSQLDUMP ]
 then
  echo "missing dependeces"
   apt install pigz mysqldump mariadb-client
@@ -26,12 +26,12 @@ GOOD="${GREEN}NO${NC}"
 BAD="${RED}YES${NC}"
 
 # Set these variables
-MyUSER="backup"	# DB_USERNAME # edit me
-MyPASS="password"	# DB_PASSWORDc
+MyUSER="root"	# DB_USERNAME # edit me
+MyPASS=""	# DB_PASSWORDc
 MyHOST="localhost"	# DB_HOSTNAME # edit me
 
 # Backup Dest directory
-DEST="/volum/@backup/mysql/hour" # edit me
+DEST="/tmp/test" # edit me
 TEMPdir="/tmp/mysql/time"
 
 # Email for notifications
