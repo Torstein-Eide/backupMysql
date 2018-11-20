@@ -7,6 +7,7 @@ install -d /etc/scripts
 chmod 700 /etc/scripts
 cd /etc/scripts
 wget https://raw.githubusercontent.com/Eideen/backupMysql/master/db_backup_daily.sh
+wget https://raw.githubusercontent.com/Eideen/backupMysql/master/db_backup_common.sh
 wget https://raw.githubusercontent.com/Eideen/backupMysql/master/db_backup_horly.sh
 chmod +x ./*.sh
 ```
