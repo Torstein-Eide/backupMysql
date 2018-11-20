@@ -10,7 +10,7 @@ if [ -z $Pigz ] || [ -z $MYSQL ] || [ -z $MYSQLDUMP ]
 then
  echo "missing dependeces"
   apt install pigz mysqldump mariadb-client
-  fi
+fi
 
 
 #Text Colors
@@ -24,12 +24,11 @@ BAD="${RED}YES${NC}"
 
 # Set these variables
 MyUSER="backup"	# DB_USERNAME # edit me
-MyPASS="password"	# DB_PASSWORDc
+MyPASS="2001:4661:4f72:0"	# DB_PASSWORDc
 MyHOST="localhost"	# DB_HOSTNAME # edit me
 
 # Backup Dest directory
-DEST="/volum/@backup/mysql/hour" # edit me
-TEMPdir="/tmp/mysql/time"
+TEMPdir="/tmp/$scriptname"
 
 # Email for notifications
 EMAIL=
@@ -63,14 +62,18 @@ chmod 700 $MBD
 
 #make dir
 if [ ! -d $DEST ]
-echo "Directory does not $DEST exist, making dir"
-mkdir -v $DEST || echo "problem exiting" | exit
-chmod 700 $DEST
-fi
+then
+	echo "Directory does not $DEST exist, making dir"
+	mkdir -v $DEST || echo "problem exiting" | exit
+	chmod 700 $DEST
+else 
+	echo "Directory $DEST exist"
+	fi
+
 
 dbdump() {
 skipdb=-1
-SECONDS=0
+START="$(date "+%s%N")"
 if [ "$db" == "mysql" ];
   then
    SKIPLOG="--skip-lock-tables"
@@ -89,8 +92,11 @@ if [ "$SKIP" != "" ];
     if [ "$skipdb" == "-1" ]
      then
         FILE="$MBD/$db.sql"
+		
         $MYSQLDUMP -h $MyHOST -u $MyUSER -p$MyPASS $db > $FILE 
-        echo "extracted $GREEN$db${NC} in $SECONDS"
+		TT=$(printf %.4f "$(("$(date "+%s%N")" - $START))e-9")
+		echo "extracted $GREEN$db${NC} $TT s"
+		
      else
         echo "skiping   $RED$db${NC}"
     fi
@@ -101,7 +107,7 @@ for db in $DBS
 do
 dbdump &
 done
-FAIL=0
+#FAIL=0
 #jobs verbose
 #for job in `jobs -p`
 #do
@@ -112,6 +118,9 @@ wait
 cd $TEMPdir
 tar -I pigz -cf $DEST/$NOW.tar.gz $NOW
 #$GZIP -9 $NOW.tar
+cd /tmp
+#remove temp file
+rm -rf $TEMPdir
 
 if [ -n "$EMAIL" ]
 then
@@ -124,16 +133,3 @@ echo "sant"
 else
 echo "${RED}mail not setup${NC}"
 fi
-
-#remove temp file
-rm -rf $TEMPdir
-
-# Remove old files
-find $DEST -mmin +$MIN -exec rm -f {} \;
-if [ "$FAIL" == "0" ];
-then
-echo "${GREEN}MySQL backup is completed without export fail"
-else
-echo "${RED}MySQL backup is completed with export ($FAIL) fails!"
-fi
-
