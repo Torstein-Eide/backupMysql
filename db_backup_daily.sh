@@ -4,6 +4,9 @@ set -euo pipefail
 IFS=$'\n\t'
 export scriptname="$0"
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+cd $DIR
+
 ############################################
 ###Remember to edit ./db_backup_common.sh###
 ############################################
