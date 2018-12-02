@@ -4,12 +4,12 @@
 # Linux bin paths
 MYSQL="$(which mysql)"
 MYSQLDUMP="$(which mysqldump)"
-Pigz="$(which pigz)"
+PXZ="$(which pxz)"
 
-if [ -z $Pigz ] || [ -z $MYSQL ] || [ -z $MYSQLDUMP ]
+if [ -z $PXZ ] || [ -z $MYSQL ] || [ -z $MYSQLDUMP ]
 then
  echo "missing dependeces"
-  apt install pigz mysqldump mariadb-client
+  apt install pxz mysqldump mariadb-client
 fi
 
 
@@ -116,7 +116,7 @@ done
 wait
 # Archive the directory, send mail and cleanup
 cd $TEMPdir
-tar -I pigz -cf $DEST/$NOW.tar.gz $NOW
+tar -I "pxz -1" -cf $DEST/$NOW.tar.xz $NOW
 #$GZIP -9 $NOW.tar
 cd /tmp
 #remove temp file
