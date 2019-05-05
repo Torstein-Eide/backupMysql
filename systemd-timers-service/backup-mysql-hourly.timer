@@ -1,0 +1,8 @@
+[Unit]
+Description=backup mysql databases timer
+
+[Timer]
+OnCalendar=*:48
+
+[Install]
+WantedBy=timers.target

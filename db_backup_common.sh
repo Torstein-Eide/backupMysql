@@ -9,7 +9,7 @@ PXZ="$(which pxz)"
 if [ -z $PXZ ] || [ -z $MYSQL ] || [ -z $MYSQLDUMP ]
 then
  echo "missing dependeces"
-  apt install pxz mysqldump mariadb-client
+  apt install pigz mysqldump mariadb-client
 fi
 
 
@@ -24,7 +24,7 @@ BAD="${RED}YES${NC}"
 
 # Set these variables
 MyUSER="backup"	# DB_USERNAME # edit me
-MyPASS="backup-password"	# DB_PASSWORDc
+MyPASS="2001:4661:4f72:0"	# DB_PASSWORDc
 MyHOST="localhost"	# DB_HOSTNAME # edit me
 
 # Backup Dest directory
@@ -116,7 +116,9 @@ done
 wait
 # Archive the directory, send mail and cleanup
 cd $TEMPdir
+du -hs $TEMPdir
 tar -I "pxz -1" -cf $DEST/$NOW.tar.xz $NOW
+du -hs $DEST/$NOW.tar.xz
 #$GZIP -9 $NOW.tar
 cd /tmp
 #remove temp file
