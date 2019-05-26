@@ -8,8 +8,8 @@ PXZ="$(which pxz)"
 
 if [ -z $PXZ ] || [ -z $MYSQL ] || [ -z $MYSQLDUMP ]
 then
- echo "missing dependeces"
-  apt install pxz mysqldump mariadb-client
+ echo "missing dependeces, installing dependeces"
+  sudo apt install pxz mysqldump mariadb-client
 fi
 set -euo pipefail
 
