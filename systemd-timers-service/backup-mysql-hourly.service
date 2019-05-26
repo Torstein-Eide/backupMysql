@@ -4,7 +4,7 @@ Documentation="https://github.com/Eideen/backupMysql"
 
 [Service]
 Type=oneshot
-WorkingDirectory=/volum/@backup/skripts/backupMysql/
-ExecStart=/volum/@backup/skripts/backupMysql/db_backup_horly.sh
+WorkingDirectory=/volum1/@backup/skripts/backupMysql/
+ExecStart=/volum1/@backup/skripts/backupMysql/db_backup_horly.sh
 User=backup
 Nice=19

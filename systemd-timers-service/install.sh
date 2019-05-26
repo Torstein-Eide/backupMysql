@@ -7,7 +7,7 @@ function Replace_file {
   if [ -f $SYSTEMD/$1 ]  && [ ! -L $SYSTEMD/$1 ]
 then
 echo "Moving $SYSTEMD/$1 File for backup"
-      mv -v -f $SYSTEMD//$1{,.dtbak}
+      mv -v -f $SYSTEMD/$1{,.dtbak}
   fi
   if [[ -e $SYSTEMD/$1 ]] && [[  $(readlink $SYSTEMD/$1) == $PWD/$1 ]]; then
     echo "link to file $1 eksist"
