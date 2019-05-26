@@ -9,9 +9,9 @@ PXZ="$(which pxz)"
 if [ -z $PXZ ] || [ -z $MYSQL ] || [ -z $MYSQLDUMP ]
 then
  echo "missing dependeces"
-  apt install pigz mysqldump mariadb-client
+  apt install pxz mysqldump mariadb-client
 fi
-
+set -euo pipefail
 
 #Text Colors
 GREEN=`tput setaf 2`
@@ -22,16 +22,6 @@ NC=`tput sgr0` #No color
 GOOD="${GREEN}NO${NC}"
 BAD="${RED}YES${NC}"
 
-# Set these variables
-MyUSER="backup"	# DB_USERNAME # edit me
-MyPASS="2001:4661:4f72:0"	# DB_PASSWORDc
-MyHOST="localhost"	# DB_HOSTNAME # edit me
-
-# Backup Dest directory
-TEMPdir="/tmp/$scriptname"
-
-# Email for notifications
-EMAIL=
 
 
 # Get date in dd-mm-yyyy format
@@ -40,10 +30,7 @@ NOW="$(date +"%Y-%m-%d_%H%M")"
 # Create Backup sub-directories
 MBD="$TEMPdir/$NOW/mysql"
 
-# DB skip list
-SKIP="information_schema
-performance_schema
-another_one_db"
+
 
 # Get all databases
 DBS="$($MYSQL -h $MyHOST -u $MyUSER -p$MyPASS -Bse 'show databases')"
@@ -66,7 +53,7 @@ then
 	echo "Directory does not $DEST exist, making dir"
 	mkdir -v $DEST || echo "problem exiting" | exit
 	chmod 700 $DEST
-else 
+else
 	echo "Directory $DEST exist"
 	fi
 
@@ -92,11 +79,11 @@ if [ "$SKIP" != "" ];
     if [ "$skipdb" == "-1" ]
      then
         FILE="$MBD/$db.sql"
-		
-        $MYSQLDUMP -h $MyHOST -u $MyUSER -p$MyPASS $db > $FILE 
+
+        $MYSQLDUMP -h $MyHOST -u $MyUSER -p$MyPASS $db > $FILE
 		TT=$(printf %.4f "$(("$(date "+%s%N")" - $START))e-9")
 		echo "extracted $GREEN$db${NC} $TT s"
-		
+
      else
         echo "skiping   $RED$db${NC}"
     fi

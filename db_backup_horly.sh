@@ -1,6 +1,6 @@
 #!/bin/bash
 # Shell script to backup MySQL database
-set -euo pipefail
+
 IFS=$'\n\t'
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 cd $DIR
@@ -13,22 +13,21 @@ export scriptname=${scriptname:2}
 ############################################
 ###Remember to edit ./db_backup_common.sh###
 ############################################
-
+source config.sh
 
 # How many days old files must be to be removed
 HOURS=24
-MIN=$(expr $HOURS \* 60)
-
-
 ## Backup Dest directory
-export DEST="/volum/@backup/mysql/time" # edit me
+export DEST="$DESTDIR/time" # edit me
+### end of variables
 
+
+set -euo pipefail
 ./db_backup_common.sh
 
 # Remove old files
+MIN=$(expr $HOURS \* 60)
 find $DEST -mmin +$MIN -exec rm -f {} \;
 
 echo ""
 echo "MySQL backup is completed"
-
-
