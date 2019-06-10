@@ -10,8 +10,12 @@ IFS=$'\n\t'
 # How many days old files must be to be removed
 DAYS=31
 # Backup Dest directory
+<<<<<<< Updated upstream
 export DEST="$HOME/db_backup_daily" # edit me
 
+=======
+export DEST="/volum1/@backup/mysql/daglig" # edit me
+>>>>>>> Stashed changes
 
 
 

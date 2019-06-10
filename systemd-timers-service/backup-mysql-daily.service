@@ -1,0 +1,10 @@
+[Unit]
+Description=backup MYSQL databases daily
+Documentation="https://github.com/Eideen/backupMysql"
+
+[Service]
+Type=oneshot
+WorkingDirectory=/volum1/@backup/skripts/backupMysql/
+ExecStart=/volum1/@backup/skripts/backupMysql/db_backup_daily.sh
+User=backup
+Nice=19

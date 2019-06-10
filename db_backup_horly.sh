@@ -11,6 +11,7 @@ IFS=$'\n\t'
 HOURS=24
 
 ## Backup Dest directory
+<<<<<<< Updated upstream
 export DEST="$HOME/db_backup_hourly" # edit me
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
@@ -19,6 +20,9 @@ cd $DIR
 scriptname="$0"
 scriptname=${scriptname::-3}
 export scriptname=${scriptname:2}
+=======
+export DEST="/volum1/@backup/mysql/time" # edit me
+>>>>>>> Stashed changes
 
 ./db_backup_common.sh
 
