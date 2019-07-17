@@ -12,9 +12,10 @@ source config.sh
 
 # How many days old files must be to be removed
 export DAYS=31
+
 # Backup Dest directory
 export DEST="$DESTDIR/daglig" # edit me
-
+### end of variables
 
 #Used for Temp folder
 scriptname="$0"

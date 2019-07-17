@@ -1,5 +1,5 @@
 #!/bin/bash
-cd "$(dirname "$(readlink -f "$0" || realpath "$0")")"
+
 SYSTEMD=/etc/systemd/system/
 
 
@@ -19,6 +19,8 @@ echo "Moving $SYSTEMD/$1 File for backup"
   fi
 
 }
+
+cd "$(dirname "$(readlink -f "$0" || realpath "$0")")"
 
 for file in $(find . -maxdepth 1 \( -name "*.timer" -o -name "*.service" \) -type f  -printf "%f\n" ); do
   Replace_file $file &

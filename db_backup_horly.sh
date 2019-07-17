@@ -17,7 +17,7 @@ source config.sh
 
 # How many days old files must be to be removed
 HOURS=24
-## Backup Dest directory
+# Backup Dest directory
 export DEST="$DESTDIR/time" # edit me
 ### end of variables
 
