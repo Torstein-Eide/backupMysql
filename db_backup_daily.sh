@@ -11,10 +11,13 @@ IFS=$'\n\t'
 source config.sh
 
 # How many days old files must be to be removed
+
 export DAYS=31
 
 # Backup Dest directory
-export DEST="$DESTDIR/daglig" # edit me
+export DEST="$HOME/db_backup_daily" # edit me
+
+
 ### end of variables
 
 #Used for Temp folder
