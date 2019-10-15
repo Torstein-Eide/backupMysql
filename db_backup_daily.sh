@@ -15,7 +15,7 @@ source config.sh
 export DAYS=31
 
 # Backup Dest directory
-export DEST="$HOME/db_backup_daily" # edit me
+export DEST="$DESTDIR/db_backup_daily" # edit me
 
 
 ### end of variables
