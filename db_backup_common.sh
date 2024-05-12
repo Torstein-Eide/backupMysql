@@ -1,46 +1,56 @@
 # THIS the common config file, do not run this directly
 
+
+info() {
+     echo "$( $date ): $* "  
+}
+warnings(){ 
+    echo -e "\033[93m$( $date ): $* \033[0m"
+}
+error(){ 
+    echo -e "\033[91m$( $date ): $* \033[0m"
+}
+
+
 #control for dependeces
 # Linux bin paths
-MYSQL="$(which mysql)"
-MYSQLDUMP="$(which mysqldump)"
-PXZ="$(which pxz)"
+MARIADB="$(which mariadb)"
+MARIADUMP="$(which mariadb-dump)"
+ZSTD="$(which zstd)"
 
-if [ -z $PXZ ] || [ -z $MYSQL ] || [ -z $MYSQLDUMP ]
+if [ -z $ZSTD ] || [ -z $MARIADB ] || [ -z $MARIADUMP ]
 then
- echo "missing dependeces, installing dependeces"
-  sudo apt install pxz mysqldump mariadb-client
+ warnings "missing dependeces, installing dependeces"
+ apt install zstd mariadb-client || error "missing dependeces, unable to install" && exit 1
 fi
 set -euo pipefail
 
-#Text Colors
-GREEN=`tput setaf 2`
-RED=`tput setaf 1`
-NC=`tput sgr0` #No color
+function cleanup {
+ #remove temp file
+ info "cleanup"
+ info "removing $TEMPdir"
+ rm -r $TEMPdir
+}
 
-#Output Strings
-GOOD="${GREEN}NO${NC}"
-BAD="${RED}YES${NC}"
+# Trap Ctrl-C & Ctrl-\ to clean up
+trap 'error "Backup interrupted >&2"; cleanup; exit 2' INT TERM
 
-
+# Set the number of threads for zstd to 2 times the number of threads
+zstd_threads=$((1 * $(nproc)))
 
 # Get date in dd-mm-yyyy format
 NOW="$(date +"%Y-%m-%d_%H%M")"
 
-# Create Backup sub-directories
-MBD="$TEMPdir/$NOW/mysql"
-
-
 
 # Get all databases
-DBS="$($MYSQL -h $MyHOST -u $MyUSER -p$MyPASS -Bse 'show databases')"
-echo -e "${NC}list of databases:"
-for i in $DBS
-do
-	echo "* $GREEN$i${NC}"
+DBS="$($MARIADB -h $MyHOST -u $MyUSER -p$MyPASS -Bse 'show databases')"
+info "list of databases:"
+for i in $DBS; do
+    info "* ${i}"
 done
-#\n$GREEN$DBS${NC}
 
+# Create Backup sub-directories
+MBD="${TEMPdir}/mysql"
 
 #make temp dir
 install -d $MBD
@@ -48,68 +58,58 @@ chmod 700 $MBD
 
 
 #make dir
-if [ ! -d $DEST ]
-then
-	echo "Directory does not $DEST exist, making dir"
-	mkdir -v $DEST || echo "problem exiting" | exit
-	chmod 700 $DEST
+if [ ! -d $DEST ]; then
+	warnings "Directory does not $DEST exist, making dir"
+	mkdir -v $DEST || error "problem creating $DEST, exiting" | exit
+	chmod 700 $DEST || error "problem chmod 700 $DEST, exiting" | exit
 else
-	echo "Directory $DEST exist"
-	fi
+	info "Directory $DEST exist"
+fi
 
 
 dbdump() {
 skipdb=-1
 START="$(date "+%s%N")"
-if [ "$db" == "mysql" ];
-  then
+if [ "$db" == "mariadb" ]; then
    SKIPLOG="--skip-lock-tables"
-  else
+else
    SKIPLOG=""
- fi
+fi
 
-if [ "$SKIP" != "" ];
-  then
-    for i in $SKIP
-     do
+if [ "$SKIP" != "" ]; then
+    for i in $SKIP; do
       [ "$db" == "$i" ] && skipdb=1 || :
-     done
-    fi
+    done
+fi
 
-    if [ "$skipdb" == "-1" ]
-     then
-        FILE="$MBD/$db.sql"
-
-        $MYSQLDUMP -h $MyHOST -u $MyUSER -p$MyPASS $db > $FILE
+if [ "$skipdb" == "-1" ]; then
+    FILE="$MBD/$db.sql"
+    $MARIADUMP -h $MyHOST -u $MyUSER -p$MyPASS $db > $FILE || error "problem dumping database $db" && exit 1
 		TT=$(printf %.4f "$(("$(date "+%s%N")" - $START))e-9")
-		echo "extracted $GREEN$db${NC} $TT s"
+		info "extracted $db, $TT s"
 
-     else
-        echo "skiping   $RED$db${NC}"
-    fi
+else
+    info "skiping $db"
+fi
 }
 
 # Archive database dumps
-for db in $DBS
-do
-dbdump &
+for db in $DBS; do
+  dbdump &
 done
-#FAIL=0
-#jobs verbose
-#for job in `jobs -p`
-#do
-#    wait $job || let "FAIL+=1"
-#done
 wait
 # Archive the directory, send mail and cleanup
+DEST_TAR="$DEST/$NOW.tar.zstd"
 cd $TEMPdir
 du -hs $TEMPdir
-tar -I "pxz -1" -cf $DEST/$NOW.tar.xz $NOW
-du -hs $DEST/$NOW.tar.xz
-#$GZIP -9 $NOW.tar
-cd /tmp
-#remove temp file
-rm -rf $TEMPdir
+tar_I="zstd --adapt=max=15 -$compression_level -T${zstd_threads}"
+tar -I "$tar_I" -cf $DEST_TAR $NOW
+du -hs $DEST_TAR
+ln -fvs  $NOW.tar.zstd $DEST/latest.tar.zstd
+ln -fvs  $DEST_TAR $DESTDIR/latest.tar.zstd
+
+# Clean up tmp files.
+cleanup
 
 if [ -n "$EMAIL" ]
 then
@@ -117,8 +117,9 @@ echo "sant"
         echo "
         To: $EMAIL
         Subject: MySQL backup
-        MySQL backup is completed! Backup name is $NOW.tar.gz" | ssmtp $EMAIL
+        MySQL backup is completed! Backup name is $NOW.tar.zstd" | ssmtp $EMAIL
 
 else
-echo "${RED}mail not setup${NC}"
+info "mail not setup"
 fi
+info "Backup finished successfully"

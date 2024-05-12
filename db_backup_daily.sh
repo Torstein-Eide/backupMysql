@@ -15,7 +15,7 @@ source config.sh
 export DAYS=31
 
 # Backup Dest directory
-export DEST="$DESTDIR/db_backup_daily" # edit me
+export DEST="$DESTDIR/daily" # edit me
 
 
 ### end of variables
@@ -27,7 +27,7 @@ export scriptname=${scriptname:2}
 
 
 set -euo pipefail
-./db_backup_common.sh
+bash ./db_backup_common.sh
 
 
 # Remove old files

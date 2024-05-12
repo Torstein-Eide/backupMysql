@@ -7,10 +7,13 @@ export MyHOST="localhost"	# DB_HOSTNAME # edit me
 export DESTDIR="/volum1/@backup/mysql"
 
 #Tempfolder for databases will tarballing.
-export TEMPdir="/tmp/$scriptname"
+export TEMPdir="$(mktemp -d)"
 
 # Email for notifications
 export EMAIL=
+
+# Default compression level
+export compression_level=6
 
 # DB skip list
 export SKIP="information_schema

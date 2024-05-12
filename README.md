@@ -25,10 +25,16 @@ database backup user passowrd, make a random password.
 date +%s | sha256sum | base64 | head -c 32 ; echo
 ```
 ## On the mysql server:
+
+Open Maria/Mysql program, with admin privlages.
 ```
-mysql -u root -p
-CREATE USER 'DB_USERNAME'@'HOSTNAME' IDENTIFIED BY 'DB_PASSWORD';
-GRANT LOCK TABLES, SELECT, SHOW VIEW, RELOAD, REPLICATION CLIENT, EVENT, TRIGGER ON *.* TO 'DB_USERNAME'@'HOSTNAME' ;
+mariadb -u root
+```
+
+Run sql commands.
+```sql
+CREATE USER '${DB_USERNAME}'@'Localhost' IDENTIFIED BY '${DB_PASSWORD}';
+GRANT LOCK TABLES, SELECT, SHOW VIEW, RELOAD, REPLICATION CLIENT, EVENT, TRIGGER ON *.* TO '${DB_USERNAME}'@'Localhost' ;
 flush privileges;
 ```
 ## edit the scripts to fit your setup:
