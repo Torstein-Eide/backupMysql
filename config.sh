@@ -18,4 +18,8 @@ export compression_level=6
 # DB skip list
 export SKIP="information_schema
 performance_schema
-another_one_db"
+another_one_db
+sys"
+
+# Get date in dd-mm-yyyy format, for use in logs
+export date="date +%Y-%M-%dT%R:%S"
